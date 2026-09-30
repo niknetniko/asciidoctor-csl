@@ -19,3 +19,4 @@ build/
 /vendor/bundle
 /lib/bundler/man/
 .rvmrc
+Gemfile.lock
