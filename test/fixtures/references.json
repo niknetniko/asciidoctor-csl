@@ -1,0 +1,26 @@
+[
+  {
+    "id": "smith2020",
+    "type": "book",
+    "title": "A history of things",
+    "author": [{ "family": "Smith", "given": "Anna" }],
+    "issued": { "date-parts": [[2020]] }
+  },
+  {
+    "id": "doe2019",
+    "type": "article-journal",
+    "title": "Alpha particles",
+    "container-title": "Nature",
+    "volume": "12",
+    "page": "3-5",
+    "author": [{ "family": "Doe", "given": "Bert" }],
+    "issued": { "date-parts": [[2019]] }
+  },
+  {
+    "id": "adams2018",
+    "type": "book",
+    "title": "Uncited work",
+    "author": [{ "family": "Adams", "given": "Carla" }],
+    "issued": { "date-parts": [[2018]] }
+  }
+]

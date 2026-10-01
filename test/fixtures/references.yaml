@@ -1,0 +1,8 @@
+- id: smith2020
+  type: book
+  title: A history of things
+  author:
+    - family: Smith
+      given: Anna
+  issued:
+    date-parts: [[2020]]
