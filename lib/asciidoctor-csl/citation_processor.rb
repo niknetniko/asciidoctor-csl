@@ -1,4 +1,9 @@
+# frozen_string_literal: true
+
 module AsciidoctorCsl
+  # CitationProcessor
+  #
+  # AsciiDoc tree processor for CSL
   class CitationProcessor < ::Asciidoctor::Extensions::TreeProcessor
     include ::Asciidoctor::Logging
 
@@ -14,7 +19,7 @@ module AsciidoctorCsl
       bibitem = document.extensions.inline_macros.map(&:instance).find { |m| m.name == :bibitem }
 
       path_to_csl = document.normalize_system_path csl_file, document.base_dir
-      processor = Processor.new path_to_csl, true, csl_style, csl_lang
+      processor = Processor.new path_to_csl, csl_style, csl_lang
 
       # Collect all cited keys, in appearance order.
       document.find_by(traverse_documents: true) { |b| prose?(b) }.each do |block|
@@ -31,6 +36,7 @@ module AsciidoctorCsl
       processor.finalize_macro_processing render_all: bibliography.render_all?
       # Provide the Citeproc renderer
       cite.csl = processor.citeproc
+      cite.bibliography = !bibliography.blocks.empty?
       bibitem.processor = processor
 
       bibliography.blocks.each { |block| parse_content block, processor.build_bibliography_list }
@@ -48,7 +54,7 @@ module AsciidoctorCsl
     def raw_texts(block)
       texts = []
       texts << block.instance_variable_get(:@title) if block.title?
-      if block.context == :list_item || block.context == :table_cell
+      if %i[list_item table_cell].include?(block.context)
         texts << block.instance_variable_get(:@text)
       elsif block.content_model == :simple
         texts.concat block.lines

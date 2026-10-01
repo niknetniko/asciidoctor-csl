@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+require 'English'
 require 'rake/clean'
 
 default_tasks = []
@@ -11,17 +14,20 @@ begin
     t.warning = true
   end
 rescue LoadError
-  warn $!.message
+  warn $ERROR_INFO.message
 end
 
 begin
   require 'bundler/gem_tasks'
   default_tasks << :build
 rescue LoadError
-  warn 'asciidoctor-csl: Bundler is required to build this gem.
-  You can install Bundler using `gem install` command:
+  warn <<~MSG
+    asciidoctor-csl: Bundler is required to build this gem.
+    You can install Bundler using `gem install` command:
 
-  $ [sudo] gem install bundler' + %(\n\n)
+      $ [sudo] gem install bundler
+
+  MSG
 end
 
-task :default => default_tasks unless default_tasks.empty?
+task default: default_tasks unless default_tasks.empty?

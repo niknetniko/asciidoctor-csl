@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'test_helper'
 
 class FormatTest < Minitest::Test
@@ -68,6 +70,7 @@ class FormatTest < Minitest::Test
 
   def test_text_case_keeps_asciidoc_syntax
     text = 'the {product} of link:https://example.org[in vitro] and [.role]##smith## on +iPhone+ use'
+
     assert_equal 'THE {product} OF link:https://example.org[in vitro] AND [.role]##SMITH## ON +iPhone+ USE',
                  apply(text, text_case: 'uppercase')
     assert_equal 'The {product} of link:https://example.org[in vitro] and [.role]##Smith## on +iPhone+ Use',
@@ -77,6 +80,7 @@ class FormatTest < Minitest::Test
   def test_bibliography_entries_are_separate_paragraphs
     bibliography = CiteProc::Bibliography.new
     @format.bibliography(bibliography)
+
     assert_equal "\n\n", bibliography.connector
   end
 end
@@ -94,7 +98,7 @@ class QuotesTest < Minitest::Test
     Tempfile.create(['references', '.json']) do |file|
       file.write JSON.generate(article(title))
       file.flush
-      processor = AsciidoctorCsl::Processor.new file.path, false, 'ieee', locale
+      processor = AsciidoctorCsl::Processor.new file.path, 'ieee', locale
       processor.add_citations ['a']
       processor.finalize_macro_processing
       processor.build_bibliography_list.first
@@ -115,6 +119,7 @@ class QuotesTest < Minitest::Test
 
   def test_quotes_are_converted_by_asciidoctor
     html, = convert "cite:doe2019[]\n\nbibliography::[]", csl('ieee')
+
     assert_includes bibliography_entries(html).first, '&#8220;Alpha particles,&#8221;'
   end
 end

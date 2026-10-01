@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'asciidoctor'
 require 'asciidoctor/extensions'
 require 'citeproc'
@@ -5,15 +7,19 @@ require 'citeproc'
 module AsciidoctorCsl
   # CitationMacro
   #
-  # The `cite:key1,key2[locator, label, prefix=..., suffix=...]` macro.
+  # The `cite:key1,key2[locator, label, prefix=..., suffix=..., link=false]` macro.
   class CitationMacro < ::Asciidoctor::Extensions::InlineMacroProcessor
     include ::Asciidoctor::Logging
+
     use_dsl
 
     named :cite
     name_positional_attributes 'locator', 'label'
 
     attr_accessor :csl
+
+    # Whether the document has a bibliography with entries to link to.
+    attr_writer :bibliography
 
     def process(parent, target, attributes)
       keys = target.split(',').map(&:strip)
@@ -29,7 +35,8 @@ module AsciidoctorCsl
         items.last[:locator] = attributes['locator']
         label = attributes['label'] || 'page'
         unless CiteProc::CitationItem.labels.include?(label.to_sym)
-          logger.warn "cite: unknown locator label '#{label}', expected one of #{CiteProc::CitationItem.labels.join(', ')}"
+          allowed = CiteProc::CitationItem.labels.join(', ')
+          logger.warn "cite: unknown locator label '#{label}', expected one of #{allowed}"
         end
         items.last[:label] = label
       end
@@ -37,15 +44,16 @@ module AsciidoctorCsl
       items.last[:suffix] = ", #{attributes['suffix']}" if attributes['suffix']
 
       if csl.nil?
-        logger.warn "cite: CSL style not found"
+        logger.warn 'cite: CSL style not found'
         return nil
       end
 
+      csl.engine.format.link_citations = @bibliography && attributes['link'] != 'false'
       text = csl.render(:citation, items)
       # Support footnote styles
       text = "footnote:[#{text.gsub(']', '\\]')}]" if csl.engine.style.info.citation_format == :note
 
-      create_inline parent, :quoted, text,  attributes: { 'subs' => :normal }
+      create_inline parent, :quoted, text, attributes: { 'subs' => :normal }
     end
   end
 end

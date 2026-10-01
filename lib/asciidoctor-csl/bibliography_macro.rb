@@ -1,7 +1,12 @@
+# frozen_string_literal: true
+
 require 'asciidoctor'
 require 'asciidoctor/extensions'
 
 module AsciidoctorCsl
+  # BibliographyBlockMacro
+  #
+  # Provides the bibliography block macro. (bibliography::[select=cited])
   class BibliographyBlockMacro < ::Asciidoctor::Extensions::BlockMacroProcessor
     include ::Asciidoctor::Logging
 
@@ -16,7 +21,7 @@ module AsciidoctorCsl
       @render_all
     end
 
-    def process(parent, target, attrs)
+    def process(parent, _target, attrs)
       case attrs['select']
       when nil, 'cited' then nil
       when 'all' then @render_all = true

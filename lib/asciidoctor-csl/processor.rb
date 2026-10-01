@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # Manage the current set of citations, the document settings,
 # and main operations.
@@ -12,9 +14,7 @@ require 'date'
 require_relative 'citeproc_patches'
 require_relative 'csl_renderer'
 
-
 module AsciidoctorCsl
-
   # Class used through utility method to hold data about citations for
   # current document, and run the different steps to add the citations
   # and bibliography
@@ -34,13 +34,11 @@ module AsciidoctorCsl
 
     def initialize(
       bibliography_file,
-      links = false,
       style = 'ieee',
       locale = 'en'
     )
       raise "File '#{bibliography_file}' is not found" unless FileTest.file? bibliography_file
 
-      @links = links
       @style = style
       @locale = locale
 
@@ -70,7 +68,7 @@ module AsciidoctorCsl
       @citations = @citations.uniq
 
       keys = render_all ? @citations | @bibliography.keys : @citations
-      @citeproc.import keys.filter_map { |key| @bibliography[key] }
+      @citeproc.import(keys.filter_map { |key| @bibliography[key] })
 
       @rendered = @citeproc.bibliography
 
@@ -82,7 +80,7 @@ module AsciidoctorCsl
 
     def build_bibliography_list
       @rendered.ids.zip(@rendered.references).flat_map do |id, reference|
-        [@links ? "[[#{id}]]#{reference}" : reference, '']
+        ["[[#{id}]]#{reference}", '']
       end
     end
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'test_helper'
 
 class CiteprocPatchesTest < Minitest::Test
@@ -6,6 +8,7 @@ class CiteprocPatchesTest < Minitest::Test
     item.suppressed?('author')
     copy = item.dup
     copy.suppress!('author')
+
     assert_empty item.suppressed
     assert_equal ['author'], copy.suppressed
   end
@@ -17,6 +20,7 @@ class CiteprocPatchesTest < Minitest::Test
     processor << { 'id' => 'b', 'type' => 'book', 'title' => 'Other',
                    'author' => [{ 'family' => 'Doe', 'given' => 'B' }], 'issued' => { 'date-parts' => [[2019]] } }
     first = processor.bibliography.references
+
     assert_equal first, processor.bibliography.references
     assert_equal '(Smith, 2020)', processor.render(:citation, id: 'a')
   end

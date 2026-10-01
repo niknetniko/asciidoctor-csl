@@ -1,12 +1,17 @@
+# frozen_string_literal: true
+
 module AsciidoctorCsl
   # Render CSL directly to AsciiDoc.
   class Asciidoc < CiteProc::Ruby::Format
     include ::Asciidoctor::Logging
 
-    PROTECTED_RX = /\{[\w-]+}|\b[a-z][\w-]*:\S*?\[[^\]]*\]|\[[^\]]*\](?=#)|\+\+\+.*?\+\+\+|\+[^+]+\+/.freeze
+    PROTECTED_RX = /<<[^,>]+,|\{[\w-]+}|\b[a-z][\w-]*:\S*?\[[^\]]*\]|\[[^\]]*\](?=#)|\+\+\+.*?\+\+\+|\+[^+]+\+/.freeze
     PLACEHOLDER_RX = /\u0000(\d+)\u0000/.freeze
 
-    def bibliography(bibliography, locale = nil)
+    # Whether rendered citations link to their bibliography entry.
+    attr_accessor :link_citations
+
+    def bibliography(bibliography, _locale = nil)
       bibliography.connector = "\n\n"
       bibliography
     end

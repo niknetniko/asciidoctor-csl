@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'asciidoctor'
 require 'asciidoctor/extensions'
 require 'citeproc'
@@ -8,13 +10,14 @@ module AsciidoctorCsl
   # The `bibitem:key1[]` macro.
   class BibitemMacro < ::Asciidoctor::Extensions::InlineMacroProcessor
     include ::Asciidoctor::Logging
+
     use_dsl
 
     named :bibitem
 
     attr_accessor :processor
 
-    def process(parent, target, attributes)
+    def process(parent, target, _attributes)
       entry = processor&.render_entry(target)
       if entry.nil?
         logger.warn "bibitem: unknown reference: #{target}"
