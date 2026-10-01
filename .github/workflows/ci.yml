@@ -1,6 +1,9 @@
 name: ci.yml
 on:
-  push
+  push:
+    branches: ['**']
+  pull_request:
+  workflow_call:
 
 jobs:
   test:

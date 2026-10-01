@@ -13,6 +13,9 @@ Gem::Specification.new do |s|
   s.email = ['niko@strijbol.be']
   s.homepage = 'https://github.com/niknetniko/asciidoctor-csl'
   s.summary = 'An Asciidoctor extension that adds CSL integration to AsciiDoc'
+  s.metadata['source_code_uri'] = 'https://github.com/niknetniko/asciidoctor-csl'
+  s.metadata['bug_tracker_uri'] = 'https://github.com/niknetniko/asciidoctor-csl/issues'
+  s.metadata['changelog_uri'] = 'https://github.com/niknetniko/asciidoctor-csl/releases'
   s.license = 'EUPL-1.2'
   s.description = 'asciidoctor-csl is an Asciidoctor extension that adds CSL support for AsciiDoc documents.'
   s.required_ruby_version = '>= 3.2'

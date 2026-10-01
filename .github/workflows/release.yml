@@ -1,0 +1,37 @@
+name: release.yml
+on:
+  push:
+    tags: ['v*']
+
+jobs:
+  ci:
+    uses: ./.github/workflows/ci.yml
+
+  release:
+    name: Release
+    needs: ci
+    runs-on: ubuntu-latest
+    environment: release
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '4.0'
+          bundler-cache: true
+      - name: Check tag matches gem version
+        run: |
+          version=$(ruby -Ilib -e 'require "asciidoctor-csl/version"; puts AsciidoctorCsl::VERSION')
+          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match gem version $version"
+            exit 1
+          fi
+      - run: gem build asciidoctor-csl.gemspec
+      - uses: rubygems/configure-rubygems-credentials@v2.1.0
+      - run: gem push asciidoctor-csl-*.gem
+      - name: Create GitHub release
+        run: gh release create "$GITHUB_REF_NAME" asciidoctor-csl-*.gem --verify-tag --generate-notes
+        env:
+          GH_TOKEN: ${{ github.token }}
