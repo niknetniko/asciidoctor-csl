@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
   s.summary = 'An Asciidoctor extension that adds CSL integration to AsciiDoc'
   s.license = 'EUPL-1.2'
   s.description = 'asciidoctor-csl is an Asciidocotor extension that adds CSL support for AsciiDoc documents.'
-  s.required_ruby_version = '>= 2.4.0'
+  s.required_ruby_version = '>= 3.2'
   s.files = Dir['lib/**/*'] + ['LICENSE.txt', 'README.adoc']
   s.add_dependency 'asciidoctor', '~> 2.0'
   s.add_dependency 'citeproc-ruby', '~> 2.1'
