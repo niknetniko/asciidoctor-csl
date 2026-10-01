@@ -20,3 +20,4 @@ build/
 /lib/bundler/man/
 .rvmrc
 Gemfile.lock
+*.iml
