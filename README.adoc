@@ -7,19 +7,107 @@ It is thus not possible to use both at the same time.
 
 == Use
 
-asciidoctor-csl provides three new macros:
+Loading the extension:
 
-- `cite:[key]` to cite a single source
-- `bibitem:[key]` to render a single bibliography item
-- `bibliography::[]` which, bu default, automatically generates a rendered version of all cited items
+[source,shell]
+----
+asciidoctor -r asciidoctor-csl/extensions document.adoc
+----
 
-If the document has a bibliography, each cited item links to its entry.
-Use `cite:key[link=false]` to disable the link for a single citation.
+You need to configure which bibliography file to use, in https://citeproc-js.readthedocs.io/en/latest/csl-json/markup.html[CSL-JSON] (`.json`), or as YAML (`.yml` or `.yaml`):
 
-== Working
+[source,asciidoc]
+----
+= My document
+:csl-file: references.json
+:csl-style: apa
+
+As shown by cite:smith2020[], ...
+
+== References
+
+bibliography::[]
+----
+
+=== Configuration
+
+These document attributes configure the extension:
+
+`csl-file`::
+The bibliography file, relative to the document.
+Required: without it, the macros are not rendered.
+
+`csl-style`::
+The citation style, as the name of a style from https://github.com/citation-style-language/styles[the CSL style repository], e.g. `apa`, `ieee`, or `chicago-notes-bibliography-17th-edition`.
+Defaults to `ieee`.
+
+`csl-lang`::
+The language used for terms such as "p." or "and".
+Defaults to the `lang` attribute of the document, or `en` if that is not set.
+
+=== Citations
+
+`cite:key[]` cites a source.
+Cite multiple sources in one citation with commas: `cite:smith2020,doe2019[]`.
+
+The macro accepts these options:
+
+[cols="1,3"]
+|===
+|Attribute |Description
+
+|locator (1st positional)
+|The location in the source, e.g. `cite:smith2020[12]`.
+Quote values containing a comma: `cite:smith2020["12, 14"]`.
+
+|label (2nd positional)
+|The kind of locator, e.g. `cite:smith2020[3, chapter]`.
+Defaults to `page`.
+Other values are `book`, `column`, `figure`, `folio`, `issue`, `line`, `note`, `opus`, `paragraph`, `part`, `section`, `sub-verbo`, `verse` and `volume` (supports all options from citeproc).
+
+|`prefix`
+|Text placed before the citation, e.g. `cite:smith2020[prefix=see]`.
+
+|`suffix`
+|Text placed after the citation, e.g. `cite:smith2020[suffix=for details]`.
+
+|`link`
+|If the document has a bibliography, each cited item links to its entry.
+Use `link=false` to disable this for a single citation.
+|===
+
+With multiple keys, the locator and suffix apply to the last source, and the prefix to the first.
+Footnotes are supported as well.
+Citations in section titles are not supported.
+
+=== Bibliography
+
+`bibliography::[]` renders the bibliography.
+By default, it only renders the cited sources.
+Use `bibliography::[select=all]` to include everything in the bibliography.
+
+Each entry gets an anchor with the source's key as ID, like `<<smith2020>>`.
+
+=== Single entries
+
+`bibitem:key[]` renders the entry of a single source inline.
+It does not count as a citation: the source is not added to the bibliography and does not affect the numbering.
+
+== Citation Style Language support
+
+The gem supports almost everything that its CSL processor (`citeproc`) supports.
+A few tweaks are done to make it work better with AsciiDoc:
+
+* The gem renders quotes as https://docs.asciidoctor.org/asciidoc/latest/text/quotation-marks-and-apostrophes/["curly"] quotes, so AsciiDoctor will render them. Use a good output template, like https://github.com/niknetniko/asciidoctor-html5s[`asciidoctor-html5s`]
+* The source of the CSL bibliography is parsed as AsciiDoc. This means:
+  - You can add formatting inside your bibliography using AsciiDoc
+  - The gem does not support `citeproc-js`'s default for inline HTML. A straight export from Zotero probably won't work with all AsciiDoc's output formats (but should work when outputting HTML).
+
+== How does it work?
 
 This gem works by using https://github.com/inukshuk/citeproc-ruby[citeproc-ruby] and https://github.com/inukshuk/csl-styles[csl-styles] to render the items.
-It is mostly a thin layer between AsciiDoctor and those gems.
+It includes a citeproc plugin to render to AsciiDoc natively.
+Otherwise, it is mostly a thin layer between AsciiDoctor and those gems.
 
 == License
 
