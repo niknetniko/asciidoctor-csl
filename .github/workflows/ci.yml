@@ -13,5 +13,15 @@ jobs:
         with:
           ruby-version: '4.0'
           bundler-cache: true
-      - run: bundle install
       - run: bundle exec rake test
+
+  lint:
+    name: RuboCop
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '4.0'
+          bundler-cache: true
+      - run: bundle exec rubocop
