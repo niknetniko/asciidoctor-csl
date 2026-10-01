@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.email = ['niko@strijbol.be']
   s.homepage = 'https://github.com/niknetniko/asciidoctor-csl'
   s.summary = 'An Asciidoctor extension that adds CSL integration to AsciiDoc'
-  s.license = 'TBD'
+  s.license = 'EUPL-1.2'
   s.description = 'asciidoctor-csl is an Asciidocotor extension that adds CSL support for AsciiDoc documents.'
   s.required_ruby_version = '>= 2.4.0'
   s.files = Dir['lib/**/*'] + ['LICENSE.txt', 'README.adoc']

@@ -20,3 +20,8 @@ Use `cite:key[link=false]` to disable the link for a single citation.
 
 This gem works by using https://github.com/inukshuk/citeproc-ruby[citeproc-ruby] and https://github.com/inukshuk/csl-styles[csl-styles] to render the items.
 It is mostly a thin layer between AsciiDoctor and those gems.
+
+== License
+
+This gem is published under the EUPL 1.2.
+See the LICENSE.txt file.
