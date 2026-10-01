@@ -4,6 +4,7 @@ asciidoctor-csl adds CSL integration for AsciiDoc.
 The macros to use are heavily inspired by https://github.com/asciidoctor-contrib/asciidoctor-bibtex[asciidoctor-bibtex].
 It is thus not possible to use both at the same time.
 
+Note: this gem is new and subject to change.
 
 == Use
 
