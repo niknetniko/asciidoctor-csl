@@ -1,0 +1,19 @@
+= asciidoctor-csl: CSL integration for AsciiDoc
+
+asciidoctor-csl adds CSL integration for AsciiDoc.
+The macros to use are heavily inspired by https://github.com/asciidoctor-contrib/asciidoctor-bibtex[asciidoctor-bibtex].
+It is thus not possible to use both at the same time.
+
+
+== Use
+
+asciidoctor-csl provides three new macros:
+
+- `cite:[key]` to cite a single source
+- `bibitem:[key]` to render a single bibliography item
+- `bibliography::[]` which, bu default, automatically generates a rendered version of all cited items
+
+== Working
+
+This gem works by using https://github.com/inukshuk/citeproc-ruby[citeproc-ruby] and https://github.com/inukshuk/csl-styles[csl-styles] to render the items.
+It is mostly a thin layer between AsciiDoctor and those gems.
