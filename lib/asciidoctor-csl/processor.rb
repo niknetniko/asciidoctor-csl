@@ -89,7 +89,7 @@ module AsciidoctorCsl
     def read_bibliography_file(bibliography_file)
       case File.extname(bibliography_file).downcase
       when '.json' then JSON.parse(File.read(bibliography_file))
-      when '.yml', '.yaml' then YAML.safe_load(File.read(bibliography_file), permitted_classes: [Date])
+      when '.yml', '.yaml' then YAML.safe_load_file(bibliography_file, permitted_classes: [Date])
       else
         raise "Bibliography file must have .json, .yml, or .yaml extension, got #{File.extname(bibliography_file)}"
       end

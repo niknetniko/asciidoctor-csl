@@ -5,8 +5,8 @@ module AsciidoctorCsl
   class Asciidoc < CiteProc::Ruby::Format
     include ::Asciidoctor::Logging
 
-    PROTECTED_RX = /<<[^,>]+,|\{[\w-]+}|\b[a-z][\w-]*:\S*?\[[^\]]*\]|\[[^\]]*\](?=#)|\+\+\+.*?\+\+\+|\+[^+]+\+/.freeze
-    PLACEHOLDER_RX = /\u0000(\d+)\u0000/.freeze
+    PROTECTED_RX = /<<[^,>]+,|\{[\w-]+}|\b[a-z][\w-]*:\S*?\[[^\]]*\]|\[[^\]]*\](?=#)|\+\+\+.*?\+\+\+|\+[^+]+\+/
+    PLACEHOLDER_RX = /\u0000(\d+)\u0000/
 
     # Whether rendered citations link to their bibliography entry.
     attr_accessor :link_citations
