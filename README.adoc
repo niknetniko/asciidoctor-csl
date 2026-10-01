@@ -12,7 +12,7 @@ Loading the extension:
 
 [source,shell]
 ----
-asciidoctor -r asciidoctor-csl/extensions document.adoc
+asciidoctor -r asciidoctor-csl document.adoc
 ----
 
 You need to configure which bibliography file to use, in https://citeproc-js.readthedocs.io/en/latest/csl-json/markup.html[CSL-JSON] (`.json`), or as YAML (`.yml` or `.yaml`):

@@ -23,3 +23,8 @@ Metrics/ClassLength:
 
 Minitest/MultipleAssertions:
   Max: 5
+
+# The main file must match the gem name.
+Naming/FileName:
+  Exclude:
+    - lib/asciidoctor-csl.rb
