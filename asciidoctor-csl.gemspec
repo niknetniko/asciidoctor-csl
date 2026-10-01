@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'asciidoctor', '~> 2.0'
   s.add_dependency 'citeproc-ruby', '~> 2.1'
   s.add_dependency 'csl-styles', '~> 2.0'
-  s.add_dependency 'logger'
+  s.add_dependency 'logger', '~> 1.7'
 
   s.metadata['rubygems_mfa_required'] = 'true'
 end
