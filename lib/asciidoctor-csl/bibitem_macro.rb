@@ -25,7 +25,9 @@ module AsciidoctorCsl
         return create_inline parent, :quoted, "[#{target}]"
       end
 
-      create_inline parent, :quoted, entry, attributes: { 'subs' => :normal }
+      # Asciidoctor scans the output of inline macros for URLs again, linking those already linked.
+      # Encoding the colon of `://` hides them from that scan; it renders the same.
+      create_inline parent, :quoted, parent.apply_subs(entry).gsub('://', '&#58;//')
     end
   end
 end

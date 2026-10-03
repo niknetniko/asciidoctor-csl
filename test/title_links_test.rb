@@ -91,26 +91,26 @@ class TitleLinksTest < Minitest::Test
   end
 
   def test_bibitem_is_linked
-    html, = convert 'bibitem:both[]', attributes(link: true)
+    html, = convert_bibitem 'bibitem:both[]', attributes(link: true)
 
     assert_equal ['Smith, A. (2020). <a href="https://doi.org/10.1000/xyz_1">Linked by DOI</a>. <em>Nature</em>.'],
                  paragraphs(html)
   end
 
   def test_bibitem_can_disable_links
-    html, = convert 'bibitem:both[link-title=false]', attributes(link: true)
+    html, = convert_bibitem 'bibitem:both[link-title=false]', attributes(link: true)
 
     refute_includes html, '>Linked by DOI</a>'
   end
 
   def test_bibitem_can_enable_links
-    html, = convert 'bibitem:both[link-title=true]', attributes
+    html, = convert_bibitem 'bibitem:both[link-title=true]', attributes
 
     assert_includes html, '<a href="https://doi.org/10.1000/xyz_1">Linked by DOI</a>'
   end
 
   def test_bibitem_override_does_not_leak_into_later_entries
-    html, = convert "bibitem:both[link-title=true]\n\nbibitem:both[]", attributes
+    html, = convert_bibitem "bibitem:both[link-title=true]\n\nbibitem:both[]", attributes
     linked, plain = paragraphs(html)
 
     assert_includes linked, '>Linked by DOI</a>'
@@ -118,15 +118,13 @@ class TitleLinksTest < Minitest::Test
   end
 
   def test_bibitem_url_with_brackets
-    skip 'bibitem: substitutes its output twice, which breaks URLs containing brackets'
-
-    html, = convert 'bibitem:url[]', attributes(link: true)
+    html, = convert_bibitem 'bibitem:url[]', attributes(link: true)
 
     assert_includes html, '<a href="https://example.org/page_1?q=[1]">Linked by URL</a>'
   end
 
   def test_repeated_entries_stay_linked
-    html, = convert "bibitem:both[]\n\nbibitem:both[]", attributes(link: true)
+    html, = convert_bibitem "bibitem:both[]\n\nbibitem:both[]", attributes(link: true)
     first, second = paragraphs(html)
 
     assert_includes first, '<a href="https://doi.org/10.1000/xyz_1">'
@@ -134,8 +132,8 @@ class TitleLinksTest < Minitest::Test
   end
 
   def test_repeated_entries_do_not_substitute_the_author
-    html, = convert "bibitem:both[]\n\nbibitem:both[]",
-                    attributes('chicago-notes-bibliography-17th-edition', link: true)
+    html, = convert_bibitem "bibitem:both[]\n\nbibitem:both[]",
+                            attributes('chicago-notes-bibliography-17th-edition', link: true)
 
     entry = 'Smith, Anna. <a href="https://doi.org/10.1000/xyz_1">&#8220;Linked by DOI&#8221;</a>. ' \
             '<em>Nature</em>, 2020.'
@@ -149,6 +147,12 @@ class TitleLinksTest < Minitest::Test
     attributes = { 'csl-file' => 'online.json', 'csl-style' => style }
     attributes['csl-link-title'] = '' if link
     attributes
+  end
+
+  # bibitem: encodes the colon of URLs (see BibitemMacro), which renders the same.
+  def convert_bibitem(source, attributes)
+    html, messages = convert source, attributes
+    [html.gsub('&#58;', ':'), messages]
   end
 
   def cite_all

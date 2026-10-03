@@ -50,6 +50,22 @@ class UrlTest < Minitest::Test
     assert_includes footnotes(html), '&#8220;A [Draft] Report,&#8221;'
   end
 
+  def test_bibitem_links_url_once
+    html, = convert 'bibitem:url[]', csl_online('apa')
+
+    assert_includes paragraphs(html).first,
+                    '<a href="https&#58;//example.org/page_1?q=[1]" class="bare">' \
+                    'https&#58;//example.org/page_1?q=[1]</a>'
+    assert_equal 1, html.scan('<a ').size
+  end
+
+  def test_url_with_plus_signs
+    html, = convert "cite:url[]\n\nbibliography::[]", { 'csl-file' => 'plus.json', 'csl-style' => 'apa' }
+
+    assert_includes bibliography_entries(html).first,
+                    '<a href="https://example.org/c++/a+++b" class="bare">https://example.org/c++/a+++b</a>'
+  end
+
   private
 
   def csl_online(style)

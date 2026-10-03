@@ -111,7 +111,7 @@ module AsciidoctorCsl
 
       return unless title_link && node.is_a?(CSL::Style::Text) && node.variable == 'title'
 
-      output.replace "link:++#{title_link}++[#{output.gsub(']', '\]')}]"
+      output.replace "link:#{passthrough title_link}[#{output.gsub(']', '\]')}]"
       self.title_link = nil # link only the first rendered title
     end
 
@@ -125,8 +125,13 @@ module AsciidoctorCsl
             end
       @prefix_in_link = url && url?(prefix)
 
-      text = "++#{url || output}++"
+      text = passthrough(url || output)
       output.replace(url && !in_xref ? "link:#{text}[]" : text)
+    end
+
+    # Not `++text++`, which cannot contain `++`.
+    def passthrough(text)
+      "pass:c[#{text.gsub(']', '\]')}]"
     end
 
     def url?(text)

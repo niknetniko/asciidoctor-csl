@@ -1,0 +1,10 @@
+[
+  {
+    "id": "url",
+    "type": "webpage",
+    "title": "Plus signs",
+    "author": [{ "family": "Doe", "given": "Bert" }],
+    "issued": { "date-parts": [[2019]] },
+    "URL": "https://example.org/c++/a+++b"
+  }
+]
