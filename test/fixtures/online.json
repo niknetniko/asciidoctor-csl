@@ -1,0 +1,53 @@
+[
+  {
+    "id": "both",
+    "type": "article-journal",
+    "title": "Linked by DOI",
+    "container-title": "Nature",
+    "author": [{ "family": "Smith", "given": "Anna" }],
+    "issued": { "date-parts": [[2020]] },
+    "DOI": "10.1000/xyz_1",
+    "URL": "https://example.org/both"
+  },
+  {
+    "id": "url",
+    "type": "webpage",
+    "title": "Linked by URL",
+    "author": [{ "family": "Doe", "given": "Bert" }],
+    "issued": { "date-parts": [[2019]] },
+    "URL": "https://example.org/page_1?q=[1]"
+  },
+  {
+    "id": "full-doi",
+    "type": "article-journal",
+    "title": "Full DOI",
+    "container-title": "Nature",
+    "author": [{ "family": "Evans", "given": "Dirk" }],
+    "issued": { "date-parts": [[2017]] },
+    "DOI": "https://doi.org/10.1000/full"
+  },
+  {
+    "id": "brackets",
+    "type": "article-journal",
+    "title": "A [draft] report",
+    "container-title": "Nature",
+    "author": [{ "family": "Fox", "given": "Emma" }],
+    "issued": { "date-parts": [[2016]] },
+    "DOI": "10.1000/draft"
+  },
+  {
+    "id": "untitled",
+    "type": "article-journal",
+    "container-title": "Nature",
+    "author": [{ "family": "Roe", "given": "Carla" }],
+    "issued": { "date-parts": [[2018]] },
+    "DOI": "10.1000/untitled"
+  },
+  {
+    "id": "plain",
+    "type": "book",
+    "title": "No links",
+    "author": [{ "family": "Adams", "given": "Fay" }],
+    "issued": { "date-parts": [[2015]] }
+  }
+]

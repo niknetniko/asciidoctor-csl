@@ -21,9 +21,18 @@ module AsciidoctorCsl
 
         item.suppress! 'author' if item.suppress_author?
 
-        text = render_layout(item, node)
+        text = in_xref { render_layout(item, node) }
         text = "<<#{item.id},#{text}>>" unless text.empty?
         join [item.prefix, text, item.suffix].compact
+      end
+
+      private
+
+      def in_xref
+        format.in_xref = true
+        yield
+      ensure
+        format.in_xref = false
       end
     end
 

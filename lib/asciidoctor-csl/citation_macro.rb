@@ -50,10 +50,20 @@ module AsciidoctorCsl
 
       csl.engine.format.link_citations = @bibliography && attributes['link'] != 'false'
       text = csl.render(:citation, items)
-      # Support footnote styles
-      text = "footnote:[#{text.gsub(']', '\\]')}]" if csl.engine.style.info.citation_format == :note
+      return create_footnote parent, text if csl.engine.style.info.citation_format == :note
 
       create_inline parent, :quoted, text, attributes: { 'subs' => :normal }
+    end
+
+    private
+
+    # Create the footnote like the footnote macro does, so the citation is not escaped to fit in `footnote:[]`.
+    def create_footnote(parent, text)
+      document = parent.document
+      content = parent.apply_subs text
+      index = document.counter 'footnote-number'
+      document.register :footnotes, ::Asciidoctor::Document::Footnote.new(index, nil, content)
+      create_inline parent, :footnote, content, attributes: { 'index' => index }
     end
   end
 end
