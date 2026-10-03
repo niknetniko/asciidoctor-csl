@@ -46,6 +46,11 @@ Defaults to `ieee`.
 The language used for terms such as "p." or "and".
 Defaults to the `lang` attribute of the document, or `en` if that is not set.
 
+`csl-link-title`::
+If set, the title of each entry links to the source's DOI or URL.
+Citations are not affected.
+Override it per macro with the `link-title` attribute of `bibliography::[]` and `bibitem:key[]`.
+
 === Citations
 
 `cite:key[]` cites a source.
@@ -87,12 +92,15 @@ Citations in section titles are not supported.
 By default, it only renders the cited sources.
 Use `bibliography::[select=all]` to include everything in the bibliography.
 
+Use `bibliography::[link-title=true]` or `bibliography::[link-title=false]` to override the `csl-link-title` setting for this bibliography.
+
 Each entry gets an anchor with the source's key as ID, like `<<smith2020>>`.
 
 === Single entries
 
 `bibitem:key[]` renders the entry of a single source inline.
 It does not count as a citation: the source is not added to the bibliography and does not affect the numbering.
+Like the bibliography, it accepts `link-title=true` or `link-title=false` to override the `csl-link-title` setting.
 
 == Citation Style Language support
 

@@ -7,7 +7,7 @@ require 'citeproc'
 module AsciidoctorCsl
   # BibitemMacro
   #
-  # The `bibitem:key1[]` macro.
+  # The `bibitem:key1[link-title=false]` macro.
   class BibitemMacro < ::Asciidoctor::Extensions::InlineMacroProcessor
     include ::Asciidoctor::Logging
 
@@ -17,8 +17,9 @@ module AsciidoctorCsl
 
     attr_accessor :processor
 
-    def process(parent, target, _attributes)
-      entry = processor&.render_entry(target)
+    def process(parent, target, attributes)
+      options = attributes.key?('link-title') ? { link_titles: attributes['link-title'] != 'false' } : {}
+      entry = processor&.render_entry(target, **options)
       if entry.nil?
         logger.warn "bibitem: unknown reference: #{target}"
         return create_inline parent, :quoted, "[#{target}]"

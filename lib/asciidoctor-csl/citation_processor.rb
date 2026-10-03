@@ -11,6 +11,7 @@ module AsciidoctorCsl
       csl_file = (document.attr 'csl-file').to_s
       csl_style = ((document.attr 'csl-style') || 'ieee').to_s
       csl_lang = (document.attr('csl-lang') || document.attr('lang') || 'en').to_s
+      csl_link_title = document.attr? 'csl-link-title'
 
       return if csl_file.empty?
 
@@ -19,7 +20,7 @@ module AsciidoctorCsl
       bibitem = document.extensions.inline_macros.map(&:instance).find { |m| m.name == :bibitem }
 
       path_to_csl = document.normalize_system_path csl_file, document.base_dir
-      processor = Processor.new path_to_csl, csl_style, csl_lang
+      processor = Processor.new path_to_csl, csl_style, csl_lang, link_titles: csl_link_title
 
       # Collect all cited keys, in appearance order.
       document.find_by(traverse_documents: true) { |b| prose?(b) }.each do |block|
@@ -39,7 +40,10 @@ module AsciidoctorCsl
       cite.bibliography = !bibliography.blocks.empty?
       bibitem.processor = processor
 
-      bibliography.blocks.each { |block| parse_content block, processor.build_bibliography_list }
+      bibliography.blocks.each do |block|
+        link_titles = block.attr?('link-title') ? block.attr('link-title') != 'false' : csl_link_title
+        parse_content block, processor.build_bibliography_list(link_titles:)
+      end
 
       nil
     end

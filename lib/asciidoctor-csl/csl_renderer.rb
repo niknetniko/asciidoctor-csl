@@ -11,6 +11,12 @@ module AsciidoctorCsl
     # Whether rendered citations link to their bibliography entry.
     attr_accessor :link_citations
 
+    # Whether bibliography titles link.
+    attr_accessor :link_titles
+
+    # The target for the next rendered title, set per entry by the renderer.
+    attr_accessor :title_link
+
     def bibliography(bibliography, _locale = nil)
       bibliography.connector = "\n\n"
       bibliography
@@ -76,6 +82,17 @@ module AsciidoctorCsl
       super
     ensure
       output.gsub!(PLACEHOLDER_RX) { protected[Regexp.last_match(1).to_i] } if protected
+    end
+
+    protected
+
+    def finalize_content!
+      super
+
+      return unless title_link && node.is_a?(CSL::Style::Text) && node.variable == 'title'
+
+      output.replace "link:++#{title_link}++[#{output.gsub(']', '\]')}]"
+      self.title_link = nil # link only the first rendered title
     end
   end
 end

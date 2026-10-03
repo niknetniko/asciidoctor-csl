@@ -6,7 +6,7 @@ require 'asciidoctor/extensions'
 module AsciidoctorCsl
   # BibliographyBlockMacro
   #
-  # Provides the bibliography block macro. (bibliography::[select=cited])
+  # Provides the bibliography block macro. (bibliography::[select=cited, link-title=false])
   class BibliographyBlockMacro < ::Asciidoctor::Extensions::BlockMacroProcessor
     include ::Asciidoctor::Logging
 
@@ -30,6 +30,7 @@ module AsciidoctorCsl
       end
 
       block = create_block parent, :open, nil, { 'role' => 'bibliography' }
+      block.set_attr 'link-title', attrs['link-title'] if attrs.key?('link-title')
       blocks << block
       block
     end

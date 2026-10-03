@@ -26,8 +26,52 @@ module AsciidoctorCsl
         join [item.prefix, text, item.suffix].compact
       end
     end
+
+    # Support for linking URLs in the title.
+    module LinkTitles
+      def render_bibliography(item, node)
+        return super unless format.respond_to?(:link_titles) && format.link_titles
+
+        target = link_target(item.data)
+        return super unless target
+
+        doi = item.data[:DOI]
+        url = item.data[:URL]
+        suppressed = item.data.suppressed.dup
+
+        format.title_link = target
+        # Blank DOI/URL so the style renders the entry as if it had neither:
+        # groups around them collapse as for any missing variable.
+        item.data[:DOI] = nil
+        item.data[:URL] = nil
+
+        result = super
+        return result unless format.title_link
+
+        # The style rendered no title: render the entry as usual.
+        format.title_link = nil
+        item.data[:DOI] = doi
+        item.data[:URL] = url
+        # Rendering suppresses variables used as substitutes; undo that too.
+        item.data.suppressed.replace suppressed
+        super
+      ensure
+        format.title_link = nil if format.respond_to?(:title_link=)
+      end
+
+      private
+
+      def link_target(data)
+        doi = data[:DOI].to_s.strip
+        return doi.match?(%r{\Ahttps?://}i) ? doi : "https://doi.org/#{doi}" unless doi.empty?
+
+        url = data[:URL].to_s.strip
+        url unless url.empty?
+      end
+    end
   end
 end
 
 CiteProc::Item.prepend AsciidoctorCsl::CiteprocPatches::SeparateSuppression
 CiteProc::Ruby::Renderer.prepend AsciidoctorCsl::CiteprocPatches::LinkCitations
+CiteProc::Ruby::Renderer.prepend AsciidoctorCsl::CiteprocPatches::LinkTitles

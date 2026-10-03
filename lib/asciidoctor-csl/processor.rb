@@ -35,12 +35,14 @@ module AsciidoctorCsl
     def initialize(
       bibliography_file,
       style = 'ieee',
-      locale = 'en'
+      locale = 'en',
+      link_titles: false
     )
       raise "File '#{bibliography_file}' is not found" unless FileTest.file? bibliography_file
 
       @style = style
       @locale = locale
+      @link_titles = link_titles
 
       # Citations in the order they appear in the document
       @citations = []
@@ -54,10 +56,11 @@ module AsciidoctorCsl
       @citations.concat keys.map(&:strip)
     end
 
-    def render_entry(key)
+    # Render a single entry; link_titles overrides the document default.
+    def render_entry(key, link_titles: @link_titles)
       return nil unless @bibliography.key?(key)
 
-      entries.render(:bibliography, id: key).first
+      render_bibliography_with(entries, link_titles) { entries.render(:bibliography, id: key).first }
     end
 
     # Finalize citation macro processing and build internal citation list.
@@ -70,16 +73,16 @@ module AsciidoctorCsl
       keys = render_all ? @citations | @bibliography.keys : @citations
       @citeproc.import(keys.filter_map { |key| @bibliography[key] })
 
-      @rendered = @citeproc.bibliography
-
-      @rendered.ids.each_with_index do |id, i|
+      @citeproc.bibliography.ids.each_with_index do |id, i|
         @citeproc[id][:'citation-number'] = i + 1
       end
       nil
     end
 
-    def build_bibliography_list
-      @rendered.ids.zip(@rendered.references).flat_map do |id, reference|
+    # Render the bibliography; link_titles overrides the document default.
+    def build_bibliography_list(link_titles: @link_titles)
+      rendered = render_bibliography_with(@citeproc, link_titles) { @citeproc.bibliography }
+      rendered.ids.zip(rendered.references).flat_map do |id, reference|
         ["[[#{id}]]#{reference}", '']
       end
     end
@@ -101,8 +104,23 @@ module AsciidoctorCsl
 
     def new_citeproc
       citeproc = CiteProc::Processor.new style: @style, format: :asciidoc, locale: @locale
+      citeproc.engine.format.link_titles = @link_titles
       use_asciidoc_quotes citeproc
       citeproc
+    end
+
+    # Render bibliography entries with the given title link setting.
+    #
+    # Also forget earlier bibliography renders: subsequent-author-substitute
+    # compares against the last rendered entry, even from a previous render.
+    def render_bibliography_with(citeproc, link_titles)
+      format = citeproc.engine.format
+      previous = format.link_titles
+      format.link_titles = link_titles
+      citeproc.engine.renderer.state.history.memory.delete('bibliography')
+      yield
+    ensure
+      format.link_titles = previous
     end
 
     # Override the quote handling by inserting dynamic AsciiDoc quotes.
